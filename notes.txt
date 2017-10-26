@@ -1,0 +1,28 @@
+```
+git clone git@github.com:ebadi/source.git hamid-lede
+cd hamid-lede
+./scripts/feeds update -a
+./scripts/feeds install -a
+```
+The current .config file automatically makes a qemu-mips image, run `make menuconfig` to change kernel flags.
+```
+make -j5 V=s
+qemu-system-mipsel -kernel bin/targets/malta/le/lede-malta-le-vmlinux-initramfs.elf -nographic -m 1025
+```
+Current state:
+```
+root@LEDE:/# uname -an
+Linux LEDE 4.9.58 #0 SMP Thu Oct 26 15:22:52 2017 mips GNU/Linux
+root@LEDE:/# nsjail -Mo --chroot / -- /bin/sh -i 
+[2017-10-26T17:02:28+0000] Mode: STANDALONE_ONCE
+[2017-10-26T17:02:28+0000] Jail parameters: hostname:'NSJAIL', chroot:'/', process:'/bin/sh', bind:[::]:0, max_conns_per_ip:0, time_limit:0, personality:0, daemonize:false, clone_newnet:true, clone_newuser:true, clone_newns:true, clone_newpid:true, clone_newipc:true, clonew_newuts:true, clone_newcgroup:false, keep_caps:false, tmpfs_size:4194304, disable_no_new_privs:false, max_cpus:0
+[2017-10-26T17:02:28+0000] Mount point: src:'/' dst:'/' type:'' flags:MS_RDONLY|MS_BIND|MS_REC|MS_PRIVATE|0 options:'' isDir:true
+[2017-10-26T17:02:28+0000] Mount point: src:'[NULL]' dst:'/proc' type:'proc' flags:MS_RDONLY|0 options:'' isDir:true
+[2017-10-26T17:02:28+0000] Uid map: inside_uid:0 outside_uid:0 count:1 newuidmap:false
+[2017-10-26T17:02:28+0000] [W][2302] cmdlineLogParams():247 Process will be UID/EUID=0 in the global user namespace, and will have user root-level access to files
+[2017-10-26T17:02:28+0000] Gid map: inside_gid:0 outside_gid:0 count:1 newgidmap:false
+[2017-10-26T17:02:28+0000] [W][2302] cmdlineLogParams():258 Process will be GID/EGID=0 in the global user namespace, and will have group root-level access to files
+[2017-10-26T17:02:28+0000] [W][1] mountMount():207 mount('src:'[NULL]' dst:'/proc' type:'proc' flags:MS_RDONLY|0 options:'' isDir:true') src:'none' dst:'/tmp/nsjail.root//proc' failed: Operation not permitted
+[2017-10-26T17:02:28+0000] PID: 2303 ([STANDALONE_MODE]) exited with status: 255, (PIDs left: 0)
+root@LEDE:/# 
+```
